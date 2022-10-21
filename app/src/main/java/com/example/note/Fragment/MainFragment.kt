@@ -19,11 +19,8 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
 
     private lateinit var noteList:ArrayList<NoteData>
     private lateinit var noteAdapter: NoteAdapter
-    private lateinit var edit: Edit
+    //private lateinit var edit: Edit
 
-    fun setOnClickItemTab1(edit: Edit) {
-        this.edit = edit
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,8 +71,6 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
         var fragmentedit = EditFragment.pass(noteList[position].title, noteList[position].sub_Title, position)
         fragmentedit.setEventChange(this)
         activity?.supportFragmentManager?.beginTransaction()?.add(R.id.framelayout, fragmentedit)?.addToBackStack(null)?.commit()
-
-
     }
 
     override fun changeData(title1: String, title2: String, position: Int) {

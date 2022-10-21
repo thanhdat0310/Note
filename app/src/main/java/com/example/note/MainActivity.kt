@@ -2,7 +2,6 @@ package com.example.note
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.note.Fragment.BlankFragment
 import com.example.note.Fragment.MainFragment
 
 class MainActivity : AppCompatActivity() {
@@ -10,7 +9,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val fragment = BlankFragment()
+        val fragment = MainFragment()
         supportFragmentManager.beginTransaction().add(R.id.framelayout, fragment).commit()
     }
 }
