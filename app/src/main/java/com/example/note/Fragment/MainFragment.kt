@@ -1,17 +1,17 @@
 package com.example.note.Fragment
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.note.*
 import com.example.note.Interface.Edit
 import com.example.note.Interface.EventChange
 import com.example.note.Interface.EventClick
-import com.example.note.NoteAdapter
-import com.example.note.NoteData
-import com.example.note.R
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.text.FieldPosition
 
@@ -31,6 +31,7 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
         return view
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -41,6 +42,9 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
         recyclerview.adapter = noteAdapter
 
         btnAdd.setOnClickListener {
+         /*   var num = 1
+            val intent = Intent(activity!!.baseContext , AlarmReceiver::class.java)
+            intent.putExtra(ID, num.toString())*/
 
             Add()
         }

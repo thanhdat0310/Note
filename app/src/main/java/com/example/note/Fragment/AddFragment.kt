@@ -2,27 +2,20 @@ package com.example.note.Fragment
 
 import android.annotation.SuppressLint
 import android.app.*
-import android.app.Notification
 import android.content.Context
 import android.content.Intent
-import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TimePicker
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.fragment.app.Fragment
 import com.example.note.*
 import com.example.note.Interface.EventClick
 import kotlinx.android.synthetic.main.fragment_add.*
-import kotlinx.android.synthetic.main.item.*
 import java.util.*
 
 class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener  {
@@ -38,7 +31,7 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
     var saveHour = 0
     var saveMinute = 0
 
-    var time = Long
+
 
     lateinit var eventclick: EventClick
 
@@ -84,13 +77,19 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("UseRequireInsteadOfGet")
     private fun setAlarm() {
+
         val intent = Intent(activity!!.baseContext , AlarmReceiver::class.java)
         val title = editText.text.toString()
         val message = subedittext.text.toString()
+        val uniqueID = System.currentTimeMillis().toInt()
         intent.putExtra(titleExtra, title)
         intent.putExtra(messageExtra,message)
+        intent.putExtra(idNotice,uniqueID)
+        val notifyIdLong = ((Date().time / 1000L) % Integer.MAX_VALUE)
+        var notifyIdInteger = notifyIdLong.toInt()
+        val  pendingIntent = PendingIntent.getBroadcast(activity!!.applicationContext, notifyIdInteger, intent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmManager = activity!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val  pendingIntent = PendingIntent.getBroadcast(activity!!.applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
         val time = getTime()
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
@@ -141,6 +140,8 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         saveHour = hourOfDay
         saveMinute = minute
        // setAlarm()
+
+
 
     }
     private fun getTime(): Long {

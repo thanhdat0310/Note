@@ -52,4 +52,7 @@ class NoteAdapter(val noteList: ArrayList<NoteData>, var edit: Edit): RecyclerVi
             btnDelete = v.btnDelete
         }
     }
+     interface onItemListener{
+        fun onItemClick(position : Int)
+    }
 }

@@ -90,14 +90,6 @@ class EditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
            }
             activity?.supportFragmentManager?.popBackStack()
         }
-        /*btnXoa.setOnClickListener {
-            cancelAlarm()
-            val pst = arguments?.getInt("position")
-            if (pst != null) {
-                eventChange.delete(pst)
-            }
-            activity?.supportFragmentManager?.popBackStack()
-        }*/
 
         btnsettime1.setOnClickListener {
             showTimePicker()
