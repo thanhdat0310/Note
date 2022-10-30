@@ -1,7 +1,7 @@
 package com.example.note
 
+import android.app.Notification
 import android.content.BroadcastReceiver
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -13,7 +13,8 @@ import java.util.*
 const val titleExtra = "titleExtra"
 const val messageExtra = "messageExtra"
 const val idNotice = "ID"
-class AlarmReceiver : BroadcastReceiver() {
+open class AlarmReceiver : BroadcastReceiver() {
+
 
 
 
@@ -21,7 +22,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val title= intent.getStringExtra(titleExtra)
         val message = intent.getStringExtra(messageExtra)
-
+        val idnotice = intent.getIntExtra(idNotice, 0)
 
 
         val builder = NotificationCompat.Builder(context, "thanhdat")
@@ -33,10 +34,16 @@ class AlarmReceiver : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
 
+
         val notificationManagerCompat = NotificationManagerCompat.from(context)
-        notificationManagerCompat.notify(123, builder.build())
+        notificationManagerCompat.notify(idnotice, builder.build())
+        Log.d("concac", idnotice.toString())
+
+
+
 
     }
+
 
 
 }

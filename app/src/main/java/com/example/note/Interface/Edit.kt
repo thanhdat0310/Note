@@ -3,5 +3,6 @@ package com.example.note.Interface
 import com.example.note.NoteData
 
 interface Edit {
-    fun Edit(position: Int)
+    fun EditNote(position: Int)
+    fun DeleteNote(position: Int)
 }

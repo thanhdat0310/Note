@@ -1,5 +1,6 @@
 package com.example.note
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,11 +27,11 @@ class NoteAdapter(val noteList: ArrayList<NoteData>, var edit: Edit): RecyclerVi
 
         holder.itemView.setOnClickListener {
 
-            edit.Edit(position)
+            edit.EditNote(position)
+
         }
         holder.btnDelete.setOnClickListener {
-            noteList.removeAt(position)
-            notifyDataSetChanged()
+            edit.DeleteNote(position)
         }
 
     }

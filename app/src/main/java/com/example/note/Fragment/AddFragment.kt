@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import android.widget.TimePicker
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.note.*
+import com.example.note.Interface.Communicator
 import com.example.note.Interface.EventClick
 import kotlinx.android.synthetic.main.fragment_add.*
 import java.util.*
@@ -31,10 +33,10 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
     var saveHour = 0
     var saveMinute = 0
 
-
+    lateinit var communicator: Communicator
 
     lateinit var eventclick: EventClick
-
+    val uniqueID = System.currentTimeMillis().toInt()
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +54,9 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
         createNotificationChannel()
         btnsettime.setOnClickListener {
             showTimePicker()
@@ -62,6 +67,7 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         }
 
         btnAccept.setOnClickListener {
+
             add()
             setAlarm()
         }
@@ -71,6 +77,8 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         val titleText = editText.text.toString()
         val subtitleText = subedittext.text.toString()
         eventclick.sendData(titleText, subtitleText)
+        communicator = activity as Communicator
+        communicator.passData(uniqueID)
         activity?.supportFragmentManager?.popBackStack()
     }
 
@@ -79,17 +87,30 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
     private fun setAlarm() {
 
         val intent = Intent(activity!!.baseContext , AlarmReceiver::class.java)
+
         val title = editText.text.toString()
         val message = subedittext.text.toString()
         val uniqueID = System.currentTimeMillis().toInt()
         intent.putExtra(titleExtra, title)
         intent.putExtra(messageExtra,message)
         intent.putExtra(idNotice,uniqueID)
+        val result = Bundle()
+
         val notifyIdLong = ((Date().time / 1000L) % Integer.MAX_VALUE)
         var notifyIdInteger = notifyIdLong.toInt()
+
+        result.putInt("dat", notifyIdInteger)
+        requireActivity().supportFragmentManager.setFragmentResult("thanhdat", result)
+        Log.d("dat1349", uniqueID.toString())
+
+
+
+
+
+
+
         val  pendingIntent = PendingIntent.getBroadcast(activity!!.applicationContext, notifyIdInteger, intent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmManager = activity!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
         val time = getTime()
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
@@ -100,12 +121,12 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
        // Toast.makeText(activity, "Alarm set Successfully", Toast.LENGTH_SHORT).show()
     }
     private fun getDateTimeCalendar(){
-        val cal  = java.util.Calendar.getInstance()
-        day =cal.get(java.util.Calendar.DAY_OF_MONTH)
-        month = cal.get(java.util.Calendar.MONTH)
-        year = cal.get(java.util.Calendar.YEAR)
-        hour = cal.get(java.util.Calendar.HOUR)
-        minute = cal.get(java.util.Calendar.MINUTE)
+        val cal  =Calendar.getInstance()
+        day =cal.get(Calendar.DAY_OF_MONTH)
+        month = cal.get(Calendar.MONTH)
+        year = cal.get(Calendar.YEAR)
+        hour = cal.get(Calendar.HOUR)
+        minute = cal.get(Calendar.MINUTE)
     }
     @SuppressLint("UseRequireInsteadOfGet")
     private fun showTimePicker() {
@@ -132,7 +153,7 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         saveYear = year
 
         getDateTimeCalendar()
-        TimePickerDialog(activity,this,hour,minute,false).show()
+        TimePickerDialog(activity,this,hour,minute,true).show()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
