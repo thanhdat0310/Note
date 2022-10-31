@@ -27,7 +27,7 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
     private lateinit var noteList:ArrayList<NoteData>
     private lateinit var noteAdapter: NoteAdapter
 
-    var idAlarm : Int? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,15 +49,9 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
         recyclerview.adapter = noteAdapter
 
         btnAdd.setOnClickListener {
-         /*   var num = 1
-            val intent = Intent(activity!!.baseContext , AlarmReceiver::class.java)
-            intent.putExtra(ID, num.toString())*/
-
             Add()
         }
-
     }
-
     private fun Add(){
         val fragmentAdd = AddFragment()
         fragmentAdd.setEventClick(this)
@@ -78,12 +72,6 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
 
         }
     }
-
-    override fun EditNote(position: Int) {
-        var fragmentedit = EditFragment.pass(noteList[position].title, noteList[position].sub_Title, position)
-        fragmentedit.setEventChange(this)
-        activity?.supportFragmentManager?.beginTransaction()?.add(R.id.framelayout, fragmentedit)?.addToBackStack(null)?.commit()
-    }
     var i=0
     @SuppressLint("UseRequireInsteadOfGet")
     fun nhandulieu(): Int{
@@ -91,11 +79,20 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
         requireActivity().supportFragmentManager.setFragmentResultListener("thanhdat", this, FragmentResultListener { requestKey, result ->
             val idnotice = result.getInt("dat")
             i = idnotice
-
         } )
         return i
 
     }
+
+    override fun EditNote(position: Int) {
+        var idnotice = nhandulieu()
+        Log.d("test123", idnotice.toString())
+        var fragmentedit = EditFragment.pass(noteList[position].title, noteList[position].sub_Title, position, idnotice)
+
+        fragmentedit.setEventChange(this)
+        activity?.supportFragmentManager?.beginTransaction()?.add(R.id.framelayout, fragmentedit)?.addToBackStack(null)?.commit()
+    }
+
     @SuppressLint("UseRequireInsteadOfGet")
     override fun DeleteNote(position: Int) {
 
@@ -109,19 +106,6 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
         val alarmManager = activity!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pendingIntent)
 
-        /*requireActivity().supportFragmentManager.setFragmentResultListener("thanhdat", this, FragmentResultListener { requestKey, result ->
-            val idnotice = result.getInt("dat")
-            val intent = Intent(activity , AlarmReceiver::class.java)
-            val  pendingIntent = PendingIntent.getBroadcast(
-                requireActivity().applicationContext,
-                idnotice,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-            val alarmManager = activity!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.cancel(pendingIntent)
-
-            Log.d("tathanhdat1", idnotice.toString())
-        } )*/
         noteList.removeAt(position)
         noteAdapter.notifyDataSetChanged()
     }

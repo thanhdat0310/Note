@@ -15,10 +15,10 @@ import android.widget.TimePicker
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.note.*
-import com.example.note.Interface.Communicator
 import com.example.note.Interface.EventClick
 import kotlinx.android.synthetic.main.fragment_add.*
 import java.util.*
+
 
 class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener  {
     var day = 0
@@ -33,7 +33,7 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
     var saveHour = 0
     var saveMinute = 0
 
-    lateinit var communicator: Communicator
+
 
     lateinit var eventclick: EventClick
     val uniqueID = System.currentTimeMillis().toInt()
@@ -67,9 +67,25 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         }
 
         btnAccept.setOnClickListener {
+            val titleText = editText.text.toString()
+            val subtitleText = subedittext.text.toString()
 
+            if (titleText.length==0 && subtitleText.length==0) {
+
+                val builder1: AlertDialog.Builder = AlertDialog.Builder(activity)
+                builder1.setTitle("canh bao")
+                builder1.setMessage("ban phai nhap thong tin")
+                builder1.setCancelable(true)
+                builder1.setNeutralButton(
+                    android.R.string.ok
+                ) { dialog, id -> dialog.cancel() }
+                val alert11 = builder1.create()
+                alert11.show()
+            }
+            else{
             add()
             setAlarm()
+            }
         }
 
     }
@@ -77,9 +93,8 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         val titleText = editText.text.toString()
         val subtitleText = subedittext.text.toString()
         eventclick.sendData(titleText, subtitleText)
-        communicator = activity as Communicator
-        communicator.passData(uniqueID)
         activity?.supportFragmentManager?.popBackStack()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -90,34 +105,30 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
 
         val title = editText.text.toString()
         val message = subedittext.text.toString()
-        val uniqueID = System.currentTimeMillis().toInt()
+        val uniqueID = System.currentTimeMillis()
         intent.putExtra(titleExtra, title)
         intent.putExtra(messageExtra,message)
         intent.putExtra(idNotice,uniqueID)
         val result = Bundle()
 
-        val notifyIdLong = ((Date().time / 1000L) % Integer.MAX_VALUE)
+        val notifyIdLong = uniqueID/1000
         var notifyIdInteger = notifyIdLong.toInt()
 
         result.putInt("dat", notifyIdInteger)
         requireActivity().supportFragmentManager.setFragmentResult("thanhdat", result)
-        Log.d("dat1349", uniqueID.toString())
-
-
-
-
-
-
-
+        val time1 = gettimecurrent()
         val  pendingIntent = PendingIntent.getBroadcast(activity!!.applicationContext, notifyIdInteger, intent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmManager = activity!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val time = getTime()
+        Log.d("timehientai2", time.toString())
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             time,
             pendingIntent
         )
-
+        if (time1/100000000000 == time/100000000000){
+            alarmManager.cancel(pendingIntent)
+        }
        // Toast.makeText(activity, "Alarm set Successfully", Toast.LENGTH_SHORT).show()
     }
     private fun getDateTimeCalendar(){
@@ -172,9 +183,23 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         val month = saveMonth
         val year = saveYear
 
-        val  calendar = java.util.Calendar.getInstance()
+        val  calendar = Calendar.getInstance()
         calendar.set(year,month,day,hour,minute)
         return calendar.timeInMillis
+
+    }
+    private fun gettimecurrent():Long{
+
+        val day =Calendar.DAY_OF_MONTH
+        val month =Calendar.MONTH
+        val year = Calendar.YEAR
+        val hour = Calendar.HOUR
+        val minute = Calendar.MINUTE
+
+        val cal  =Calendar.getInstance()
+        cal.set(year,month,day,hour,minute)
+
+        return cal.timeInMillis
     }
 
 
