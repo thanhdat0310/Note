@@ -25,8 +25,8 @@ import com.example.note.Interface.EventClick
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.btnAccept
 import kotlinx.android.synthetic.main.fragment_add.btnCancel
-import kotlinx.android.synthetic.main.fragment_add.editText
-import kotlinx.android.synthetic.main.fragment_add.subedittext
+import kotlinx.android.synthetic.main.fragment_add.edittextTitle
+import kotlinx.android.synthetic.main.fragment_add.edittextMessage
 import kotlinx.android.synthetic.main.fragment_edit.*
 import java.util.*
 
@@ -92,8 +92,8 @@ class EditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
             if (titleText.length==0 && subtitleText.length==0) {
 
                 val builder1: AlertDialog.Builder = AlertDialog.Builder(activity)
-                builder1.setTitle("canh bao")
-                builder1.setMessage("ban phai nhap thong tin")
+                builder1.setTitle("LƯU Ý")
+                builder1.setMessage("Bạn cần nhạp thông tin !!!")
                 builder1.setCancelable(true)
                 builder1.setNeutralButton(
                     android.R.string.ok
@@ -127,19 +127,18 @@ class EditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
     }
 
     private fun getDateTimeCalendar() {
-        val cal  = java.util.Calendar.getInstance()
-        day =cal.get(java.util.Calendar.DAY_OF_MONTH)
-        month = cal.get(java.util.Calendar.MONTH)
-        year = cal.get(java.util.Calendar.YEAR)
-        hour = cal.get(java.util.Calendar.HOUR)
-        minute = cal.get(java.util.Calendar.MINUTE)
+        val cal  = Calendar.getInstance()
+        day =cal.get(Calendar.DAY_OF_MONTH)
+        month = cal.get(Calendar.MONTH)
+        year = cal.get(Calendar.YEAR)
+        hour = cal.get(Calendar.HOUR_OF_DAY)
+        minute = cal.get(Calendar.MINUTE)
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         saveDay = dayOfMonth
         saveMonth = month
         saveYear = year
-
         getDateTimeCalendar()
         TimePickerDialog(activity,this,hour,minute,true).show()
     }
@@ -149,9 +148,7 @@ class EditFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerD
         saveHour = hourOfDay
         saveMinute = minute
 
-
     }
-
 
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("UseRequireInsteadOfGet")

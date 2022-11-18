@@ -23,7 +23,7 @@ class NoteAdapter(val noteList: ArrayList<NoteData>, var edit: Edit): RecyclerVi
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val newList = noteList[position]
         holder.title.text = newList.title
-        holder.sub_title.text = newList.sub_Title
+        holder.message.text = newList.message
 
         holder.itemView.setOnClickListener {
 
@@ -40,20 +40,20 @@ class NoteAdapter(val noteList: ArrayList<NoteData>, var edit: Edit): RecyclerVi
         return noteList.size
     }
 
+
+
     inner class NoteViewHolder (val v : View) : RecyclerView.ViewHolder(v){
         var title : TextView
-        var sub_title :TextView
+        var message :TextView
         var btnDelete : FloatingActionButton
 
 
 
         init {
             title = v.Title
-            sub_title = v.subTitle
+            message = v.subTitle
             btnDelete = v.btnDelete
         }
     }
-     interface onItemListener{
-        fun onItemClick(position : Int)
-    }
+
 }

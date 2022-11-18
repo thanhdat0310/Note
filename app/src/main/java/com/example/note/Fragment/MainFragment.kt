@@ -6,26 +6,29 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.note.AlarmReceiver
+import androidx.recyclerview.widget.RecyclerView
+import com.example.note.*
 import com.example.note.Interface.Edit
 import com.example.note.Interface.EventChange
 import com.example.note.Interface.EventClick
-import com.example.note.NoteAdapter
-import com.example.note.NoteData
-import com.example.note.R
 import kotlinx.android.synthetic.main.fragment_main.*
+
 
 class MainFragment : Fragment(), EventClick, Edit, EventChange {
 
     private lateinit var noteList:ArrayList<NoteData>
     private lateinit var noteAdapter: NoteAdapter
+
 
 
     override fun onCreateView(
@@ -51,6 +54,8 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
         btnAdd.setOnClickListener {
             Add()
         }
+
+
     }
     private fun Add(){
         val fragmentAdd = AddFragment()
@@ -59,35 +64,33 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
 
     }
 
-    override fun sendData(title: String, subtitle: String) {
-        var message  = title
-        val message1 = subtitle
-        if(message.length==0 && message1.length>0) {
+    override fun sendData(title: String, message: String) {
+        var title1  = title
+        val message1 = message
+        if(title1.length==0 && message1.length>0) {
             noteList.add(NoteData("Không có tiêu đề", message1))
             noteAdapter.notifyDataSetChanged()
         }
-        else if(message.length>0){
-            noteList.add(NoteData(message, message1))
+        else if(title1.length>0){
+            noteList.add(NoteData(title1, message1))
             noteAdapter.notifyDataSetChanged()
 
         }
     }
     var i=0
     @SuppressLint("UseRequireInsteadOfGet")
-    fun nhandulieu(): Int{
-
+    fun GetIdNotice(): Int{  // nhận Id notice được gửi từ AddFragment
         requireActivity().supportFragmentManager.setFragmentResultListener("thanhdat", this, FragmentResultListener { requestKey, result ->
             val idnotice = result.getInt("dat")
             i = idnotice
         } )
         return i
-
     }
 
     override fun EditNote(position: Int) {
-        var idnotice = nhandulieu()
+        var idnotice = GetIdNotice()
         Log.d("test123", idnotice.toString())
-        var fragmentedit = EditFragment.pass(noteList[position].title, noteList[position].sub_Title, position, idnotice)
+        var fragmentedit = EditFragment.pass(noteList[position].title, noteList[position].message, position, idnotice) // gửi Id notice sang edit fragment
 
         fragmentedit.setEventChange(this)
         activity?.supportFragmentManager?.beginTransaction()?.add(R.id.framelayout, fragmentedit)?.addToBackStack(null)?.commit()
@@ -96,7 +99,7 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
     @SuppressLint("UseRequireInsteadOfGet")
     override fun DeleteNote(position: Int) {
 
-        val idN= nhandulieu()
+        val idN= GetIdNotice()
         val intent = Intent(activity , AlarmReceiver::class.java)
         val  pendingIntent = PendingIntent.getBroadcast(
             requireActivity().applicationContext,
@@ -104,25 +107,26 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmManager = activity!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(pendingIntent)
+        alarmManager.cancel(pendingIntent) // hủy thông báo
 
-        noteList.removeAt(position)
+        noteList.removeAt(position) // xóa item
         noteAdapter.notifyDataSetChanged()
     }
 
-    override fun changeData(title1: String, title2: String, position: Int) {
-        var message  = title1
-        val message1 = title2
-        if(message.length==0 && message1.length>0) {
+    override fun changeData(title: String, message: String, position: Int) {
+        var title1  = title
+        val message1 = message
+        if(title1.length==0 && message1.length>0) {
 
             noteList[position] = NoteData("Không có tiêu đề", message1)
             noteAdapter.notifyDataSetChanged()
         }
-        else if(message.length>0){
-            noteList[position] = NoteData(message, message1)
+        else if(title1.length>0){
+            noteList[position] = NoteData(title1, message1)
             noteAdapter.notifyDataSetChanged()
         }
     }
+
 
 
 

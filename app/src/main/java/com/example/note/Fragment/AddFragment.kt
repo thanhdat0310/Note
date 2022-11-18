@@ -36,7 +36,6 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
 
 
     lateinit var eventclick: EventClick
-    val uniqueID = System.currentTimeMillis().toInt()
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,8 +54,6 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         createNotificationChannel()
         btnsettime.setOnClickListener {
             showTimePicker()
@@ -67,14 +64,13 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         }
 
         btnAccept.setOnClickListener {
-            val titleText = editText.text.toString()
-            val subtitleText = subedittext.text.toString()
+            val titleText = edittextTitle.text.toString()
+            val messageText = edittextMessage.text.toString()
 
-            if (titleText.length==0 && subtitleText.length==0) {
-
+            if (titleText.length==0 && messageText.length==0) {    //nếu chưa nhập thông tin thì hiển thị thông báo
                 val builder1: AlertDialog.Builder = AlertDialog.Builder(activity)
-                builder1.setTitle("canh bao")
-                builder1.setMessage("ban phai nhap thong tin")
+                builder1.setTitle("LƯU Ý")
+                builder1.setMessage("Bạn cần nhập thông tin !!!")
                 builder1.setCancelable(true)
                 builder1.setNeutralButton(
                     android.R.string.ok
@@ -90,9 +86,9 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
 
     }
     private fun add(){
-        val titleText = editText.text.toString()
-        val subtitleText = subedittext.text.toString()
-        eventclick.sendData(titleText, subtitleText)
+        val title = edittextTitle.text.toString()
+        val message = edittextMessage.text.toString()
+        eventclick.sendData(title, message)
         activity?.supportFragmentManager?.popBackStack()
 
     }
@@ -102,19 +98,17 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
     private fun setAlarm() {
 
         val intent = Intent(activity!!.baseContext , AlarmReceiver::class.java)
-
-        val title = editText.text.toString()
-        val message = subedittext.text.toString()
+        val title = edittextTitle.text.toString()
+        val message = edittextMessage.text.toString()
         val uniqueID = System.currentTimeMillis()
         intent.putExtra(titleExtra, title)
         intent.putExtra(messageExtra,message)
         intent.putExtra(idNotice,uniqueID)
         val result = Bundle()
-
         val notifyIdLong = uniqueID/1000
         var notifyIdInteger = notifyIdLong.toInt()
 
-        result.putInt("dat", notifyIdInteger)
+        result.putInt("dat", notifyIdInteger) // thấy thời gian hiện tại làm id cho alarm
         requireActivity().supportFragmentManager.setFragmentResult("thanhdat", result)
         val time1 = gettimecurrent()
         val  pendingIntent = PendingIntent.getBroadcast(activity!!.applicationContext, notifyIdInteger, intent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
@@ -126,17 +120,17 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
             time,
             pendingIntent
         )
-        if (time1/100000000000 == time/100000000000){
+        if (time1/100000000000 == time/100000000000){  // so sánh thời gian hiện tại và thời gian báo thức : nếu giống nhau thì hủy báo thức
             alarmManager.cancel(pendingIntent)
         }
        // Toast.makeText(activity, "Alarm set Successfully", Toast.LENGTH_SHORT).show()
     }
-    private fun getDateTimeCalendar(){
+    private fun getDateTimeCalendar(){  // lấy thời gian hiện tại để hiện thị trên datePickerDialog
         val cal  =Calendar.getInstance()
         day =cal.get(Calendar.DAY_OF_MONTH)
         month = cal.get(Calendar.MONTH)
         year = cal.get(Calendar.YEAR)
-        hour = cal.get(Calendar.HOUR)
+        hour = cal.get(Calendar.HOUR_OF_DAY)
         minute = cal.get(Calendar.MINUTE)
     }
     @SuppressLint("UseRequireInsteadOfGet")
@@ -171,9 +165,6 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
     override fun onTimeSet(p0: TimePicker?, hourOfDay: Int, minute: Int) {
         saveHour = hourOfDay
         saveMinute = minute
-       // setAlarm()
-
-
 
     }
     private fun getTime(): Long {
@@ -188,17 +179,16 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         return calendar.timeInMillis
 
     }
-    private fun gettimecurrent():Long{
+    private fun gettimecurrent():Long{  // lấy thời gian hiện tại
 
         val day =Calendar.DAY_OF_MONTH
         val month =Calendar.MONTH
         val year = Calendar.YEAR
         val hour = Calendar.HOUR
         val minute = Calendar.MINUTE
-
         val cal  =Calendar.getInstance()
-        cal.set(year,month,day,hour,minute)
 
+        cal.set(year,month,day,hour,minute)
         return cal.timeInMillis
     }
 
