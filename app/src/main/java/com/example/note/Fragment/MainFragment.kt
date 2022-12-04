@@ -25,22 +25,16 @@ import kotlinx.android.synthetic.main.fragment_main.*
 
 
 class MainFragment : Fragment(), EventClick, Edit, EventChange {
-
     private lateinit var noteList:ArrayList<NoteData>
     private lateinit var noteAdapter: NoteAdapter
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-
         val view = inflater.inflate(R.layout.fragment_main, container, false)
         return view
     }
-
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -89,7 +83,6 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
 
     override fun EditNote(position: Int) {
         var idnotice = GetIdNotice()
-        Log.d("test123", idnotice.toString())
         var fragmentedit = EditFragment.pass(noteList[position].title, noteList[position].message, position, idnotice) // gửi Id notice sang edit fragment
 
         fragmentedit.setEventChange(this)

@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#18C80C"
-            android:src="@drawable/ic_baseline_edit_note_24" />
+            android:src="@drawable/ic_baseline_check_24" />
 
         <Space
             android:layout_width="0dp"

@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_add.*
 import java.util.*
 
 
-class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener  {
+    class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener  {
     var day = 0
     var month = 0
     var year = 0
@@ -103,7 +103,6 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         val uniqueID = System.currentTimeMillis()
         intent.putExtra(titleExtra, title)
         intent.putExtra(messageExtra,message)
-        intent.putExtra(idNotice,uniqueID)
         val result = Bundle()
         val notifyIdLong = uniqueID/1000
         var notifyIdInteger = notifyIdLong.toInt()
@@ -111,10 +110,11 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         result.putInt("dat", notifyIdInteger) // thấy thời gian hiện tại làm id cho alarm
         requireActivity().supportFragmentManager.setFragmentResult("thanhdat", result)
         val time1 = gettimecurrent()
-        val  pendingIntent = PendingIntent.getBroadcast(activity!!.applicationContext, notifyIdInteger, intent,PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val  pendingIntent = PendingIntent.getBroadcast(
+            activity!!.applicationContext, notifyIdInteger, intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmManager = activity!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val time = getTime()
-        Log.d("timehientai2", time.toString())
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             time,
@@ -156,7 +156,6 @@ class AddFragment : Fragment(),DatePickerDialog.OnDateSetListener, TimePickerDia
         saveDay = dayOfMonth
         saveMonth = month
         saveYear = year
-
         getDateTimeCalendar()
         TimePickerDialog(activity,this,hour,minute,true).show()
     }

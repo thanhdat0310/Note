@@ -12,7 +12,11 @@ class MainActivity : AppCompatActivity() {
 
         val fragment = MainFragment()
         supportFragmentManager.beginTransaction().add(R.id.framelayout, fragment).commit()
+
     }
+
+
+
 
 
 
