@@ -48,8 +48,6 @@ class MainFragment : Fragment(), EventClick, Edit, EventChange {
         btnAdd.setOnClickListener {
             Add()
         }
-
-
     }
     private fun Add(){
         val fragmentAdd = AddFragment()
